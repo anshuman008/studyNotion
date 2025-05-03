@@ -13,6 +13,7 @@ const Catalog = () => {
 
     const { loading } = useSelector((state) => state.profile)
   const { catalogName } = useParams()
+  // console.log("catalog:",catalogName)
   const [active, setActive] = useState(1)
     const [catalogPageData, setCatalogPageData] = useState(null);
     const [categoryId, setCategoryId] = useState("");
@@ -20,10 +21,13 @@ const Catalog = () => {
     //Fetch all categories
     useEffect(()=> {
         const getCategories = async() => {
-            const res = await apiConnector("GET", categories.CATEGORIES_API);
+            const res = await apiConnector("GET", categories.CATEGORIESAPI);
+            // console.log("printing res:",res.data?.data);
             const category_id = 
             res?.data?.data?.filter((ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName)[0]._id;
             setCategoryId(category_id);
+            // console.log(category_id);
+            
         }
         getCategories();
     },[catalogName]);

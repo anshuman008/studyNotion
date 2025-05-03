@@ -5,6 +5,7 @@ import { useSelector } from "react-redux"
 import { Link, matchPath, useLocation } from "react-router-dom"
 
 import logo from "../../assets/Logo/Logo-Full-Light.png"
+
 import { NavbarLinks } from "../../data/navbar-links"
 import { apiConnector } from "../../services/apiconnector"
 import { categories } from "../../services/apis"
@@ -21,10 +22,10 @@ function Navbar() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       setLoading(true)
       try {
-        const res = await apiConnector("GET", categories.CATEGORIES_API)
+        const res = await apiConnector("GET", categories.CATEGORIESAPI)
         setSubLinks(res.data.data)
       } catch (error) {
         console.log("Could not fetch Categories.", error)

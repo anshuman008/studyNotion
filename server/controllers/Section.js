@@ -15,6 +15,9 @@ exports.createSection = async (req, res) => {
 			});
 		}
 
+		console.log("cresting section",req.body);;
+		
+
 		// Create a new section with the given name
 		const newSection = await Section.create({ sectionName });
 

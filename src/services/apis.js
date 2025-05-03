@@ -7,7 +7,7 @@ const BASE_URL = "http://localhost:3001"
 console.log("Here is the base url!!",BASE_URL)
 // AUTH ENDPOINTS
 export const endpoints = {
-  SENDOTP_API: BASE_URL + "/api/v1/auth/sendotp",
+  SENDOTP_API: BASE_URL + "/api/v1/auth/sendotp/",
   SIGNUP_API: BASE_URL + "/api/v1/auth/signup",
   LOGIN_API: BASE_URL + "/api/v1/auth/login",
   RESETPASSTOKEN_API: BASE_URL + "/api/v1/auth/reset-password-token",
@@ -30,23 +30,23 @@ export const studentEndpoints = {
 
 // COURSE ENDPOINTS
 export const courseEndpoints = {
-  GET_ALL_COURSE_API: BASE_URL + "/course/getAllCourses",
-  COURSE_DETAILS_API: BASE_URL + "/course/getCourseDetails",
-  EDIT_COURSE_API: BASE_URL + "/course/editCourse",
-  COURSE_CATEGORIES_API: BASE_URL + "/course/showAllCategories",
-  CREATE_COURSE_API: BASE_URL + "/course/createCourse",
-  CREATE_SECTION_API: BASE_URL + "/course/addSection",
-  CREATE_SUBSECTION_API: BASE_URL + "/course/addSubSection",
-  UPDATE_SECTION_API: BASE_URL + "/course/updateSection",
-  UPDATE_SUBSECTION_API: BASE_URL + "/course/updateSubSection",
-  GET_ALL_INSTRUCTOR_COURSES_API: BASE_URL + "/course/getInstructorCourses",
-  DELETE_SECTION_API: BASE_URL + "/course/deleteSection",
-  DELETE_SUBSECTION_API: BASE_URL + "/course/deleteSubSection",
-  DELETE_COURSE_API: BASE_URL + "/course/deleteCourse",
+  GET_ALL_COURSE_API: BASE_URL + "/api/v1/course/getAllCourses",
+  COURSE_DETAILS_API: BASE_URL + "/api/v1/course/getCourseDetails",
+  EDIT_COURSE_API: BASE_URL + "/api/v1/course/editCourse",
+  COURSE_CATEGORIES_API: BASE_URL + "/api/v1/course/showAllCategories",
+  CREATE_COURSE_API: BASE_URL + "/api/v1/course/createCourse",
+  CREATE_SECTION_API: BASE_URL + "/api/v1/course/addSection",
+  CREATE_SUBSECTION_API: BASE_URL + "/api/v1/course/addSubSection",
+  UPDATE_SECTION_API: BASE_URL + "/api/v1/course/updateSection",
+  UPDATE_SUBSECTION_API: BASE_URL + "/api/v1/course/updateSubSection",
+  GET_ALL_INSTRUCTOR_COURSES_API: BASE_URL + "/api/v1/course/getInstructorCourses",
+  DELETE_SECTION_API: BASE_URL + "/api/v1/course/deleteSection",
+  DELETE_SUBSECTION_API: BASE_URL + "/api/v1/course/deleteSubSection",
+  DELETE_COURSE_API: BASE_URL + "/api/v1/course/deleteCourse",
   GET_FULL_COURSE_DETAILS_AUTHENTICATED:
-    BASE_URL + "/course/getFullCourseDetails",
-  LECTURE_COMPLETION_API: BASE_URL + "/course/updateCourseProgress",
-  CREATE_RATING_API: BASE_URL + "/course/createRating",
+    BASE_URL + "/api/v1/course/getFullCourseDetails",
+  LECTURE_COMPLETION_API: BASE_URL + "/api/v1/course/updateCourseProgress",
+  CREATE_RATING_API: BASE_URL + "/api/v1/course/createRating",
 }
 
 // RATINGS AND REVIEWS
@@ -56,12 +56,12 @@ export const ratingsEndpoints = {
 
 // CATAGORIES API
 export const categories = {
-  CATEGORIES_API: BASE_URL + "/course/showAllCategories",
+  CATEGORIESAPI: BASE_URL + "/api/v1/course/showAllCategories",
 }
 
 // CATALOG PAGE DATA
 export const catalogData = {
-  CATALOGPAGEDATA_API: BASE_URL + "/course/getCategoryPageDetails",
+  CATALOGPAGEDATA_API: BASE_URL + "/api/v1/course/getCategoryPageDetails",
 }
 // CONTACT-US API
 export const contactusEndpoint = {
@@ -70,8 +70,8 @@ export const contactusEndpoint = {
 
 // SETTINGS PAGE API
 export const settingsEndpoints = {
-  UPDATE_DISPLAY_PICTURE_API: BASE_URL + "/profile/updateDisplayPicture",
-  UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
-  CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
-  DELETE_PROFILE_API: BASE_URL + "/profile/deleteProfile",
+  UPDATE_DISPLAY_PICTURE_API: BASE_URL + "/api/v1/profile/updateDisplayPicture",
+  UPDATE_PROFILE_API: BASE_URL + "/api/v1/profile/updateProfile",
+  CHANGE_PASSWORD_API: BASE_URL + "/api/v1/auth/changepassword",
+  DELETE_PROFILE_API: BASE_URL + "/api/v1/profile/deleteProfile",
 }
