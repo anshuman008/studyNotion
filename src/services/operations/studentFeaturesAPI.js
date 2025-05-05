@@ -51,14 +51,14 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
         console.log("Api from studentFeatureApi.js......!!")
 
 
-        console.log("Here is the razorpay key!!", process.env.RAZORPAY_KEY)
+        console.log("Here is the razorpay key!!", process.env.REACT_APP_RAZORPAY_KEY)
         if(!orderResponse.data.success) {
             throw new Error(orderResponse?.data?.message);
         }
         console.log("PRINTING orderResponse", orderResponse);
         //options
         const options = {
-            key: process.env.RAZORPAY_KEY,
+            key: process.env.REACT_APP_RAZORPAY_KEY,
             currency: orderResponse?.data?.message?.currency,
             amount: `${orderResponse?.data?.message?.amount}`,
             order_id:orderResponse?.data?.message?.id,
