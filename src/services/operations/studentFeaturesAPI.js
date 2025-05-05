@@ -6,6 +6,8 @@ import { setPaymentLoading } from "../../slices/courseSlice";
 import { resetCart } from "../../slices/cartSlice";
 
 
+
+
 const {COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API} = studentEndpoints;
 
 function loadScript(src) {
@@ -36,28 +38,36 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
         }
 
         //initiate the order
+
+
+        console.log("Here is the bearer token!!", token)
         const orderResponse = await apiConnector("POST", COURSE_PAYMENT_API, 
                                 {courses},
                                 {
                                     Authorization: `Bearer ${token}`,
                                 })
 
+
+        console.log("Api from studentFeatureApi.js......!!")
+
+
+        console.log("Here is the razorpay key!!", process.env.RAZORPAY_KEY)
         if(!orderResponse.data.success) {
-            throw new Error(orderResponse.data.message);
+            throw new Error(orderResponse?.data?.message);
         }
         console.log("PRINTING orderResponse", orderResponse);
         //options
         const options = {
             key: process.env.RAZORPAY_KEY,
-            currency: orderResponse.data.message.currency,
-            amount: `${orderResponse.data.message.amount}`,
-            order_id:orderResponse.data.message.id,
+            currency: orderResponse?.data?.message?.currency,
+            amount: `${orderResponse?.data?.message?.amount}`,
+            order_id:orderResponse?.data?.message?.id,
             name:"Learnify",
             description: "Thank You for Purchasing the Course",
             image:rzpLogo,
             prefill: {
-                name:`${userDetails.firstName}`,
-                email:userDetails.email
+                name:`${userDetails?.firstName}`,
+                email:userDetails?.email
             },
             handler: function(response) {
                 //send successful wala mail
@@ -66,6 +76,8 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
                 verifyPayment({...response, courses}, token, navigate, dispatch);
             }
         }
+
+        console.log("yaha tak sab theeeeeek haiiiii-------->>>>")
         //miss hogya tha 
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();

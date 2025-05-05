@@ -9,12 +9,8 @@ const {
 } = require("../mail/templates/courseEnrollmentEmail")
 const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const CourseProgress = require("../models/CourseProgress")
-import Stripe from 'stripe';
-import dotenv from 'dotenv';
-dotenv.config();
 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 // Capture the payment and initiate the Razorpay order
@@ -26,6 +22,10 @@ exports.capturePayment = async (req, res) => {
   }
 
   let total_amount = 0
+
+
+  console.log("HEYYY!! IM FROM PAYEMENT CAPTURE!!",courses);
+
 
   for (const course_id of courses) {
     let course
@@ -42,7 +42,7 @@ exports.capturePayment = async (req, res) => {
 
       // Check if the user is already enrolled in the course
       const uid = new mongoose.Types.ObjectId(userId)
-      if (course.studentsEnroled.includes(uid)) {
+      if (course?.studentsEnroled?.includes(uid)) {
         return res
           .status(200)
           .json({ success: false, message: "Student is already Enrolled" })
@@ -58,7 +58,7 @@ exports.capturePayment = async (req, res) => {
 
   const options = {
     amount: total_amount * 100,
-    currency: "usd",
+    currency: "INR",
     receipt: Math.random(Date.now()).toString(),
   }
 
@@ -206,72 +206,3 @@ const enrollStudents = async (courses, userId, res) => {
   }
 }
 
-
-
-const stripePayement = async(req,res) => {
-   
-
-    console.log("Hey im from payement gateway!!"); 
-
-
-    // create stripe session
-
-    const origin = 'https://google.com'
-
-
-    const productData = [];
-
-
-    const mockProduct1 = {
-        name:"c++ crash course",
-        price: 100,
-    }
-
-    const mockProduct2 = {
-        name:"JAVA crash course",
-        price: 100,
-    }
-
-    const mockProduct3 = {
-        name:"Python crash course",
-        price: 100,
-    }
-
-    const mockProduct4 = {
-        name:"JS crash course",
-        price: 100,
-    }
-
-    productData.push(mockProduct1);
-    productData.push(mockProduct2);
-    productData.push(mockProduct3);
-    productData.push(mockProduct4);
-
-
-    const line_data = productData.map((item) => {
-        return {
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name:item.name
-                },
-                unit_amount: item.price*100,
-            },
-            quantity: 1
-        }
-    })
-
-    const session = await stripe.checkout.sessions.create({
-        line_items: line_data,
-        mode: 'payment',
-        success_url: `${origin}`,
-        cancel_url: `${origin}`,
-        metadata: {
-            orderId: '0070',
-            userId: 'anshu009'
-        }
-    })
-
-   
-    return res.json({"message":"payement sucseed!!","url":session.url})
-};
