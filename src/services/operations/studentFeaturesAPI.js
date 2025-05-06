@@ -48,6 +48,9 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
                                 })
 
 
+
+        console.log("HERE IS THE ORDERRESPONC------>>>", orderResponse);
+
         console.log("Api from studentFeatureApi.js......!!")
 
 
@@ -57,11 +60,14 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
         }
         console.log("PRINTING orderResponse", orderResponse);
         //options
+
+
+        console.log("HERE is the user detailsss---->>",userDetails)
         const options = {
             key: process.env.REACT_APP_RAZORPAY_KEY,
-            currency: orderResponse?.data?.message?.currency,
-            amount: `${orderResponse?.data?.message?.amount}`,
-            order_id:orderResponse?.data?.message?.id,
+            currency: orderResponse?.data?.data?.message?.currency,
+            amount: `${orderResponse?.data.data.amount}`,
+            order_id:`${orderResponse?.data?.data?.id}`,
             name:"Learnify",
             description: "Thank You for Purchasing the Course",
             image:rzpLogo,
@@ -71,21 +77,28 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
             },
             handler: function(response) {
                 //send successful wala mail
-                sendPaymentSuccessEmail(response, orderResponse.data.message.amount,token );
+                sendPaymentSuccessEmail({...response,razorpay_order_id:orderResponse?.data?.data?.id}, orderResponse?.data?.data?.amount,token );
                 //verifyPayment
-                verifyPayment({...response, courses}, token, navigate, dispatch);
+                verifyPayment({...response,razorpay_order_id:orderResponse?.data?.data?.id, courses, }, token, navigate, dispatch);
             }
         }
 
-        console.log("yaha tak sab theeeeeek haiiiii-------->>>>")
+        console.log("yaha tak sab theeeeeek haiiiii-------->>>>",orderResponse?.data?.data?.amount)
         //miss hogya tha 
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
+
+        console.log("AFTER PAYEMENT SUCESSSSS-------->>>>")
+
         paymentObject.on("payment.failed", function(response) {
             toast.error("oops, payment failed");
             console.log(response.error);
         })
 
+    
+        paymentObject.on("payment.success",(resp) => {
+          console.log("LETS GOOOO, PAYEMENT DONONEEEE!!")       
+        })
     }
     catch(error) {
         console.log("PAYMENT API ERROR.....", error);
@@ -95,6 +108,11 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
 }
 
 async function sendPaymentSuccessEmail(response, amount, token) {
+
+
+    console.log("API SENDPAYEMENT SUCCESSS EMAILLLL IS HERE -------->>>>>>>>>>>>>>>>>>>>>>",response);
+
+
     try{
         await apiConnector("POST", SEND_PAYMENT_SUCCESS_EMAIL_API, {
             orderId: response.razorpay_order_id,
@@ -103,6 +121,8 @@ async function sendPaymentSuccessEmail(response, amount, token) {
         },{
             Authorization: `Bearer ${token}`
         })
+
+
     }
     catch(error) {
         console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
@@ -113,6 +133,8 @@ async function sendPaymentSuccessEmail(response, amount, token) {
 async function verifyPayment(bodyData, token, navigate, dispatch) {
     const toastId = toast.loading("Verifying Payment....");
     dispatch(setPaymentLoading(true));
+    console.log("verify payement 1 IS HERE -------->>>>>>>>>>>>>>>>>>>>>>",bodyData)
+
     try{
         const response  = await apiConnector("POST", COURSE_VERIFY_API, bodyData, {
             Authorization:`Bearer ${token}`,
@@ -121,6 +143,9 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
         if(!response.data.success) {
             throw new Error(response.data.message);
         }
+
+        console.log("verify payement 2 IS HERE -------->>>>>>>>>>>>>>>>>>>>>>")
+
         toast.success("payment Successful, ypou are addded to the course");
         navigate("/dashboard/enrolled-courses");
         dispatch(resetCart());
