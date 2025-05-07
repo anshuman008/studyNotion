@@ -42,12 +42,19 @@ exports.capturePayment = async (req, res) => {
 
       // Check if the user is already enrolled in the course
       const uid = new mongoose.Types.ObjectId(userId)
+
+
+      console.log("Here is the uid genrated from momgooosee----->>>>>>>>>>>>>", uid);
+
+      console.log("Here is the course object!!", course);
       if (course?.studentsEnroled?.includes(uid)) {
         return res
           .status(200)
           .json({ success: false, message: "Student is already Enrolled" })
       }
 
+
+      console.log("after the check !!!!!!!!!")
       // Add the price of the course to the total amount
       total_amount += course.price
     } catch (error) {
@@ -160,6 +167,13 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
 
 // enroll the student in the courses
 const enrollStudents = async (courses, userId, res) => {
+
+
+
+     console.log("Here is im from enroilled student!!------>>>>>>>",courses)
+     console.log("here is user Id", userId);
+     console.log("Here is the res object!!", res);
+
   if (!courses || !userId) {
     return res
       .status(400)
@@ -171,9 +185,10 @@ const enrollStudents = async (courses, userId, res) => {
       // Find the course and enroll the student in it
       const enrolledCourse = await Course.findOneAndUpdate(
         { _id: courseId },
-        { $push: { studentsEnroled: userId } },
+        { $push: { studentsEnrolled: userId } },
         { new: true }
       )
+
 
       if (!enrolledCourse) {
         return res
