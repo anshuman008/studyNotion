@@ -9,12 +9,8 @@ const {
 } = require("../mail/templates/courseEnrollmentEmail")
 const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const CourseProgress = require("../models/CourseProgress")
-import Stripe from 'stripe';
-import dotenv from 'dotenv';
-dotenv.config();
 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 // Capture the payment and initiate the Razorpay order
@@ -26,6 +22,10 @@ exports.capturePayment = async (req, res) => {
   }
 
   let total_amount = 0
+
+
+  console.log("HEYYY!! IM FROM PAYEMENT CAPTURE!!",courses);
+
 
   for (const course_id of courses) {
     let course
@@ -42,12 +42,19 @@ exports.capturePayment = async (req, res) => {
 
       // Check if the user is already enrolled in the course
       const uid = new mongoose.Types.ObjectId(userId)
-      if (course.studentsEnroled.includes(uid)) {
+
+
+      console.log("Here is the uid genrated from momgooosee----->>>>>>>>>>>>>", uid);
+
+      console.log("Here is the course object!!", course);
+      if (course?.studentsEnroled?.includes(uid)) {
         return res
           .status(200)
           .json({ success: false, message: "Student is already Enrolled" })
       }
 
+
+      console.log("after the check !!!!!!!!!")
       // Add the price of the course to the total amount
       total_amount += course.price
     } catch (error) {
@@ -58,7 +65,7 @@ exports.capturePayment = async (req, res) => {
 
   const options = {
     amount: total_amount * 100,
-    currency: "usd",
+    currency: "INR",
     receipt: Math.random(Date.now()).toString(),
   }
 
@@ -81,12 +88,24 @@ exports.capturePayment = async (req, res) => {
 
 // verify the payment
 exports.verifyPayment = async (req, res) => {
+
+
+
+  console.log("VERFIYYYYYYYYYYYY FROMMMMMMMMMMMMMM----------->>>>>>>>>>>>>")
   const razorpay_order_id = req.body?.razorpay_order_id
   const razorpay_payment_id = req.body?.razorpay_payment_id
   const razorpay_signature = req.body?.razorpay_signature
   const courses = req.body?.courses
 
   const userId = req.user.id
+
+
+
+  console.log("razorpay_order_id", razorpay_order_id);
+  console.log("razorpay_payment_id", razorpay_payment_id);
+  console.log("razorpay_signature", razorpay_signature);
+  console.log("courses ", courses);
+  console.log("userId", userId);
 
   if (
     !razorpay_order_id ||
@@ -148,6 +167,13 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
 
 // enroll the student in the courses
 const enrollStudents = async (courses, userId, res) => {
+
+
+
+     console.log("Here is im from enroilled student!!------>>>>>>>",courses)
+     console.log("here is user Id", userId);
+     console.log("Here is the res object!!", res);
+
   if (!courses || !userId) {
     return res
       .status(400)
@@ -159,9 +185,10 @@ const enrollStudents = async (courses, userId, res) => {
       // Find the course and enroll the student in it
       const enrolledCourse = await Course.findOneAndUpdate(
         { _id: courseId },
-        { $push: { studentsEnroled: userId } },
+        { $push: { studentsEnrolled: userId } },
         { new: true }
       )
+
 
       if (!enrolledCourse) {
         return res
@@ -206,72 +233,3 @@ const enrollStudents = async (courses, userId, res) => {
   }
 }
 
-
-
-const stripePayement = async(req,res) => {
-   
-
-    console.log("Hey im from payement gateway!!"); 
-
-
-    // create stripe session
-
-    const origin = 'https://google.com'
-
-
-    const productData = [];
-
-
-    const mockProduct1 = {
-        name:"c++ crash course",
-        price: 100,
-    }
-
-    const mockProduct2 = {
-        name:"JAVA crash course",
-        price: 100,
-    }
-
-    const mockProduct3 = {
-        name:"Python crash course",
-        price: 100,
-    }
-
-    const mockProduct4 = {
-        name:"JS crash course",
-        price: 100,
-    }
-
-    productData.push(mockProduct1);
-    productData.push(mockProduct2);
-    productData.push(mockProduct3);
-    productData.push(mockProduct4);
-
-
-    const line_data = productData.map((item) => {
-        return {
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name:item.name
-                },
-                unit_amount: item.price*100,
-            },
-            quantity: 1
-        }
-    })
-
-    const session = await stripe.checkout.sessions.create({
-        line_items: line_data,
-        mode: 'payment',
-        success_url: `${origin}`,
-        cancel_url: `${origin}`,
-        metadata: {
-            orderId: '0070',
-            userId: 'anshu009'
-        }
-    })
-
-   
-    return res.json({"message":"payement sucseed!!","url":session.url})
-};
