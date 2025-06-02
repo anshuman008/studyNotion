@@ -6,7 +6,6 @@ const  { stripePayement } = require("../controllers/StripePayement");
 
 const { capturePayment, verifyPayment, sendPaymentSuccessEmail } = require("../controllers/Payments")
 const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth");
-const { BsRewind } = require("react-icons/bs");
 router.post("/capturePayment", auth, isStudent, capturePayment)
 router.post("/verifyPayment",auth, isStudent, verifyPayment)
 router.post("/sendPaymentSuccessEmail", auth, isStudent, sendPaymentSuccessEmail);
